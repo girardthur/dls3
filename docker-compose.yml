@@ -1,39 +1,48 @@
 version: '3.8'
 
 services:
-  db:
+  dls3-db:
     image: postgres:16-alpine
+    container_name: dls3-db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - dls3_postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=dls3_db
       - POSTGRES_USER=dls3_user
       - POSTGRES_PASSWORD=dls3_password
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dls3_user -d dls3_db"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dls3-network
 
-  web:
+  dls3-web:
     build: .
+    container_name: dls3-web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       - DEBUG=1
-      - DB_HOST=db
+      - DB_HOST=dls3-db
       - DB_NAME=dls3_db
       - DB_USER=dls3_user
       - DB_PASSWORD=dls3_password
       - DB_PORT=5432
     depends_on:
-      db:
+      dls3-db:
         condition: service_healthy
+    networks:
+      - dls3-network
 
 volumes:
-  postgres_data:
+  dls3_postgres_data:
+
+networks:
+  dls3-network:
+    name: dls3-network
+    driver: bridge

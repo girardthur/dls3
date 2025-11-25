@@ -8,11 +8,13 @@ Application Django 5.2.8 avec Python 3.11
 - Docker
 - Docker Compose
 
-### Installation et lancement
+### Mode développement standalone
+
+Pour développer l'application de manière standalone avec les ports exposés :
 
 1. **Construire et démarrer les conteneurs**
    ```bash
-   docker-compose up --build
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
    ```
 
 2. **Accéder à l'application**
@@ -21,13 +23,21 @@ Application Django 5.2.8 avec Python 3.11
 
 3. **Exécuter les migrations**
    ```bash
-   docker-compose exec web python manage.py migrate
+   docker-compose exec dls3-web python manage.py migrate
    ```
 
 4. **Créer un superutilisateur**
    ```bash
-   docker-compose exec web python manage.py createsuperuser
+   docker-compose exec dls3-web python manage.py createsuperuser
    ```
+
+### Intégration dans une application existante
+
+Pour intégrer DLS3 dans votre application existante avec Nginx, consultez le fichier **[INTEGRATION.md](./INTEGRATION.md)** qui contient :
+- Instructions d'intégration dans votre docker-compose.yml
+- Configuration Nginx (fichier `nginx.conf` fourni)
+- Configuration réseau Docker
+- Exemples de liens depuis votre application
 
 ### Commandes utiles
 
@@ -38,17 +48,17 @@ Application Django 5.2.8 avec Python 3.11
 
 - **Voir les logs**
   ```bash
-  docker-compose logs -f web
+  docker-compose logs -f dls3-web
   ```
 
 - **Exécuter des commandes Django**
   ```bash
-  docker-compose exec web python manage.py <commande>
+  docker-compose exec dls3-web python manage.py <commande>
   ```
 
 - **Accéder au shell Django**
   ```bash
-  docker-compose exec web python manage.py shell
+  docker-compose exec dls3-web python manage.py shell
   ```
 
 ## Développement sans Docker
@@ -82,10 +92,14 @@ Application Django 5.2.8 avec Python 3.11
 
 ```
 dls3/
-├── config/              # Configuration Django
-├── manage.py            # Script de gestion Django
-├── requirements.txt     # Dépendances Python
-├── Dockerfile          # Configuration Docker
-├── docker-compose.yml  # Orchestration Docker
-└── .env.example        # Variables d'environnement d'exemple
+├── config/                  # Configuration Django
+├── manage.py                # Script de gestion Django
+├── requirements.txt         # Dépendances Python
+├── Dockerfile              # Configuration Docker
+├── docker-compose.yml      # Orchestration Docker (pour intégration)
+├── docker-compose.dev.yml  # Surcharge pour développement standalone
+├── nginx.conf              # Configuration Nginx pour intégration
+├── .env.example            # Variables d'environnement d'exemple
+├── INTEGRATION.md          # Guide d'intégration détaillé
+└── README.md               # Ce fichier
 ```

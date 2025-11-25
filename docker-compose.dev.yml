@@ -1,0 +1,13 @@
+# Docker Compose pour le développement standalone
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  dls3-db:
+    ports:
+      - "5432:5432"
+
+  dls3-web:
+    ports:
+      - "8000:8000"
