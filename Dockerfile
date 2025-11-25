@@ -25,9 +25,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copier le code de l'application
 COPY . .
 
-# Créer un utilisateur non-root pour exécuter l'application
-RUN useradd -m -u 1000 django && chown -R django:django /app
-USER django
+# Rendre manage.py exécutable
+RUN chmod +x manage.py
 
 # Exposer le port 8000
 EXPOSE 8000
